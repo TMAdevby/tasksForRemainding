@@ -19,21 +19,25 @@ public class StringProcessor {
 
     // Длина строки
     public int getLength() {
+        return getOriginalText().length();
         // Вспомните: .length() для String
     }
 
     // Символ по индексу
     public char getCharAt(int index) {
+        return getOriginalText().charAt(index);
         // Вспомните: .charAt(index)
     }
 
     // Подстрока [start, end)
     public String getSubstring(int start, int end) {
+        return getOriginalText().substring(start,end);
         // Вспомните: .substring(start, end)
     }
 
     // Подстрока от start до конца
     public String getSubstringFrom(int start) {
+        return getOriginalText().substring(start);
         // Вспомните: .substring(start)
     }
 
@@ -41,26 +45,31 @@ public class StringProcessor {
 
     // Индекс первого вхождения подстроки
     public int indexOf(String substring) {
+        return getOriginalText().indexOf(substring);
         // Вспомните: .indexOf(substring)
     }
 
     // Индекс последнего вхождения
     public int lastIndexOf(String substring) {
+        return getOriginalText().lastIndexOf(substring);
         // Вспомните: .lastIndexOf(substring)
     }
 
     // Содержит ли строка подстроку
     public boolean contains(String substring) {
+        return getOriginalText().contains(substring);
         // Вспомните: .contains(substring)
     }
 
     // Начинается ли с префикса
     public boolean startsWith(String prefix) {
+        return getOriginalText().startsWith(prefix);
         // Вспомните: .startsWith(prefix)
     }
 
     // Заканчивается ли на суффикс
     public boolean endsWith(String suffix) {
+        return getOriginalText().endsWith(suffix);
         // Вспомните: .endsWith(suffix)
     }
 
@@ -68,6 +77,7 @@ public class StringProcessor {
 
     // Равенство (учёт регистра)
     public boolean equals(String other) {
+        return getOriginalText().equals(other);
         // Вспомните: .equals(other) — не == !
     }
 

@@ -1,3 +1,5 @@
+package com.example.thirdTask_textAnalyzer;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -60,20 +62,23 @@ public class TextAnalyzer {
 
     // Самый частый символ (без пробелов)
     public char getMostFrequentChar() {
+        if (chars.length == 0) return ' ';
         // 1. Пройдитесь по массиву chars
         int max = 0;
         int match = 0;
         int index = -1;
         for(int i = 0; i < chars.length; i++){
             for (int j = i + 1; j < chars.length ; j++) {
-                if(chars[i] == chars[j]){
+                if(chars[i] == chars[j] && chars[i] != ' '){
                     match++;
                 }
             }
             if (max < match) {
                 max = match;
+                match = 0;
                 index = i;
             }
+
         }
 
         return chars[index];
@@ -84,6 +89,7 @@ public class TextAnalyzer {
 
     // Самое длинное слово
     public String getLongestWord() {
+        if (words.length == 0) return "";
         // 1. Пройдитесь по массиву words
         int length = 0;
         int maxLength = 0;

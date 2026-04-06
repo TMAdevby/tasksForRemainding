@@ -301,25 +301,22 @@ public class StringProcessor {
 
         // Подсчитать количество слов (разделитель — пробел)
         public int countWords() {
-            String[] arr = mutableText.toString().trim().split("\\s+");
-            return arr.length;
-            // 1. trim()
-            // 2. split("\\s+") — regex: один или более пробельных символов
-            // 3. Вернуть длину массива (или 0 если пустая строка)
+            String trimmed = mutableText.toString().trim();
+            if (trimmed.isEmpty()) return 0;  // ← обработка пустой строки
+            return trimmed.split("\\s+").length;
         }
 
         // Перевернуть каждое слово в тексте (но не порядок слов!)
         // "Hello World" → "olleH dlroW"
         public String reverseEachWord() {
-            String[] arr = mutableText.toString().split(" ");
-            String result = "";
-            for (int i = 0; i < arr.length; i++) {
-                result += new StringBuilder(arr[i]).reverse();
+            String[] words = mutableText.toString().trim().split("\\s+");
+            StringBuilder result = new StringBuilder();  // ← эффективно
+
+            for (int i = 0; i < words.length; i++) {
+                if (i > 0) result.append(" ");  // ← добавляем пробел между словами
+                result.append(new StringBuilder(words[i]).reverse());
             }
-            return result;
-            // 1. split(" ") → массив слов
-            // 2. Для каждого слова: new StringBuilder(word).reverse().toString()
-            // 3. String.join(" ", reversedWords)
+            return result.toString();
         }
 
         // Закодировать: сдвинуть каждый символ на +1 (простой шифр Цезаря)
@@ -358,9 +355,13 @@ public class StringProcessor {
 
         // Проверить, является ли строка палиндромом (игнорируя регистр и пробелы)
         public boolean isPalindrome() {
-        String text = getOriginalText();
-        StringBuilder textBilder = new StringBuilder(text);
-        return text.equals(textBilder.reverse().toString()) ? true : false;
+            // Убираем всё кроме букв/цифр и приводим к нижнему регистру
+            String cleaned = getOriginalText()
+                    .replaceAll("[^a-zA-Z0-9]", "")
+                    .toLowerCase();
+
+            String reversed = new StringBuilder(cleaned).reverse().toString();
+            return cleaned.equals(reversed);
         }
 
         // Подсчитать количество цифр в строке

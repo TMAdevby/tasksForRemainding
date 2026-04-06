@@ -259,8 +259,8 @@ public class StringProcessor {
 
     // Гарантировать минимальную ёмкость
     public StringProcessor ensureCapacity(int minCapacity) {
-        mutableText.ensureCapacity(minCapacity);
-        // Вспомните: .ensureCapacity(minCapacity)
+        mutableText.ensureCapacity(minCapacity);  // ← вызываем метод (он void)
+        return this;                               // ← возвращаем текущий объект
     }
 
     // 🔹 ПОЛУЧЕНИЕ РЕЗУЛЬТАТА
@@ -358,7 +358,9 @@ public class StringProcessor {
 
         // Проверить, является ли строка палиндромом (игнорируя регистр и пробелы)
         public boolean isPalindrome() {
-        return mutableText.equals(mutableText.reverse()) ? true : false;
+        String text = getOriginalText();
+        StringBuilder textBilder = new StringBuilder(text);
+        return text.equals(textBilder.reverse().toString()) ? true : false;
         }
 
         // Подсчитать количество цифр в строке
@@ -375,10 +377,20 @@ public class StringProcessor {
         }
 
         // Извлечь все цифры из строки в новую строку
-        public String extractDigits() { ... }
+        public String extractDigits() {
+            String text = getOriginalText();
+            StringBuilder build = new StringBuilder();
+            for (int i = 0; i < text.length() ; i++) {
+                char c = text.charAt(i);
+                if(Character.isDigit(c)){
+                   build.append(c);
+                }
+            }
+            return build.toString();
+        }
 
         // Закодировать строку в Base64 и декодировать обратно
 // (используйте java.util.Base64)
-        public String encodeBase64() { ... }
-        public String decodeBase64(String encoded) { ... }
+       /* public String encodeBase64() { ... }
+        public String decodeBase64(String encoded) { ... }*/
     }

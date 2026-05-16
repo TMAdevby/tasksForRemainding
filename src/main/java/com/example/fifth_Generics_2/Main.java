@@ -8,5 +8,7 @@ public class Main {
         System.out.println(box2);
         box1.setValue("Java Generics");
         System.out.println(box1);
+
+
     }
 }

@@ -16,6 +16,10 @@ public class Box <T>{
         this.value = value;
     }
 
+    public <U> Box<U> transform(U newValue){
+        return new Box<>(newValue);
+    }
+
     @Override
     public String toString() {
         // Если значение не null, берём его полное имя класса, иначе пишем "null"

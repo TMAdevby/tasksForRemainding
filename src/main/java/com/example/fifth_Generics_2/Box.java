@@ -18,6 +18,8 @@ public class Box <T>{
 
     @Override
     public String toString() {
-        return "Box[" + "type: " + this.getClass() + "value: " + value + ']';
+        // Если значение не null, берём его полное имя класса, иначе пишем "null"
+        String typeName = (value != null) ? value.getClass().getName() : "null";
+        return "Box[type: " + typeName + ", value: " + value + "]";
     }
 }

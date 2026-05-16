@@ -6,4 +6,9 @@ public class GenericUtils {
         System.out.println("Returned: " + item);
         return item;
     }
+
+    public static <T extends Comparable<T>> T findMax(T a, T b){
+        T max = a.compareTo(b) >= 1 ? a : b ;
+        return max;
+    }
 }

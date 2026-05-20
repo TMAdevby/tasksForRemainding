@@ -15,8 +15,6 @@ public class Main {
         StringTransformer st = s -> s.toUpperCase();
 
         Main.process("hello lambda", st);
-        // 👇 ТВОЯ ЗАДАЧА:
-        // 1. Создай лямбда-выражение, которое переводит строку в ВЕРХНИЙ РЕГИСТР.
-        // 2. Вызови метод process, передав строку "hello lambda" и свою лямбду.
+
     }
 }

@@ -2,6 +2,7 @@ package com.example.stream1;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
@@ -14,5 +15,11 @@ public class Main {
                 new User("Frank", 35, 80000, "Moscow", false),
                 new User("Grace", 28, 95000, "Kazan", true)
         );
+
+        List<User>list = users.stream()
+                        .filter(user -> user.getCity().equals("Moscow"))
+                        .collect(Collectors.toList());
+
+                        list.stream().forEach(System.out::println);
     }
 }

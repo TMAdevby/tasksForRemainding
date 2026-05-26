@@ -1,9 +1,6 @@
 package com.example.stream1;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main10 {
@@ -38,6 +35,30 @@ public class Main10 {
 
         System.out.println(avgByCourse);
 
+        Student st = students.stream()
+                .max(Comparator.comparingDouble(Student::getAvgGrade))
+                .orElse(null);
+
+        System.out.println("Max : " + st.getName() + " " + st.getAvgGrade());
+
+        boolean isGreater  = students.stream()
+                .anyMatch(s -> s.getAvgGrade() > 9.0);
+
+        System.out.println(isGreater);
+
+        boolean allYanger  = students.stream()
+                .allMatch(s -> s.getAge() < 40);
+
+        System.out.println(allYanger);
+
+        String names = students.stream()
+                .filter(s -> s.getAvgGrade() >= 7.0)
+                .sorted(Comparator.comparing(Student::getName))
+                .skip(1)
+                .map(s -> s.getName())
+                .reduce((acc, s) -> acc + " | " + s).get();
+
+        System.out.println(names);
 
     }
 }

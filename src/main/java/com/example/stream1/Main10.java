@@ -3,6 +3,7 @@ package com.example.stream1;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Main10 {
@@ -32,8 +33,10 @@ public class Main10 {
                 .map(e -> String.format("%s gr : %.2f", e.getName(), e.getAvgGrade()) )
                 .forEach(System.out::println);
 
+        Map<Integer, Double> avgByCourse = students.stream()
+                .collect(Collectors.groupingBy(Student::getCourse,Collectors.averagingDouble(Student::getAvgGrade)));
 
-
+        System.out.println(avgByCourse);
 
 
     }

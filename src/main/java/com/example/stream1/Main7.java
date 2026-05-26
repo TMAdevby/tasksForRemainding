@@ -2,6 +2,7 @@ package com.example.stream1;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Main7 {
     public static void main(String[] args) {
@@ -21,6 +22,19 @@ public class Main7 {
                 .map(s -> String.format("%s , курс: %s, бал: %s " ,
                         s.getName().toUpperCase(), s.getCourse(), s.getAvgGrade()))
                 .forEach(System.out::println);
+
+       long studentsCount = students.stream().filter(s -> s.getAvgGrade() >= 7 && s.getAge() <= 25)
+                .map(s -> String.format("%s , курс: %s, бал: %s " ,
+                        s.getName().toUpperCase(), s.getCourse(), s.getAvgGrade()))
+                .count();
+
+        Optional student = students.stream().filter(s -> s.getAvgGrade() >= 7 && s.getAge() <= 25)
+                .max((s1,s2) -> Double.compare(s1.getAvgGrade() , s2.getAvgGrade()));
+
+        System.out.println(student);
+
+
+
 
     }
 }

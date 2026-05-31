@@ -5,6 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main1 {
 
@@ -27,6 +29,8 @@ public class Main1 {
 
         copyFileWithTimestamp("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg",
                 "D:\\Games\\FilesExperements\\configs\\backup");
+
+        writeChanges("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg","volume","100");
 
     }
 
@@ -108,28 +112,43 @@ public class Main1 {
         }
     }
 
-    public static void writeChengs(String sourceFileName, int value){
-        try(BufferedReader br = new BufferedReader(new FileReader(sourceFileName))){
-            String line = br.readLine();
-            StringBuilder builderLine = new StringBuilder(line);
-            int ravnoIndex = 0;
-            for (int i = 0; i < line.length(); i++) {
-                if(line.charAt(i) == '='){
-                    ravnoIndex = i;
-                }
-            }
-            String newLine = builderLine.substring(0,ravnoIndex) + value;
+    public static void writeChanges(String filePath, String key, String newValue) {
+        List<String> lines = new ArrayList<>();
 
-            StringBuilder allInformation = new StringBuilder(newLine);
-
-            while(!br.readLine().isBlank() && !br.readLine().isEmpty()){
-                allInformation.append("\n").append(br.readLine());
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
             }
-            writeToFile(sourceFileName, String.valueOf(allInformation));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Ошибка чтения файла: " + filePath, e);
+        }
+
+        boolean found = false;
+        for (int i = 0; i < lines.size(); i++) {
+            String current = lines.get(i);
+            if (current.startsWith(key + "=")) {
+                lines.set(i, key + "=" + newValue);
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            System.out.println(" Ключ '" + key + "' не найден в файле");
+            return;
+        }
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+            for (String line : lines) {
+                bw.write(line);
+                bw.newLine();
+            }
+            System.out.println(" Значение " + key + " изменено на " + newValue);
+            logs.append("Config updated: ").append(key).append("=").append(newValue)
+                    .append(" in ").append(filePath).append("\n");
+        } catch (IOException e) {
+            throw new RuntimeException("Ошибка записи в файл: " + filePath, e);
         }
     }
 

@@ -152,4 +152,28 @@ public class Main1 {
         }
     }
 
+    public static void listAllCfgFiles(String dirPath) {
+        File dir = new File(dirPath);
+
+        if (!dir.exists() || !dir.isDirectory()) {
+            System.out.println("⚠️ Папка не найдена: " + dirPath);
+            return;
+        }
+
+        File[] items = dir.listFiles();
+
+        if (items == null) {
+            return;
+        }
+
+        for (File item : items) {
+            if (item.isFile() && item.getName().endsWith(".cfg")) {
+                System.out.println(" " + item.getAbsolutePath());
+            }
+            else if (item.isDirectory()) {
+                listAllCfgFiles(item.getAbsolutePath());
+            }
+        }
+    }
+
 }

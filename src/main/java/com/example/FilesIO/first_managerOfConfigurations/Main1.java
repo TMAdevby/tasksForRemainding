@@ -17,9 +17,11 @@ public class Main1 {
         createDirectory("D:\\Games\\FilesExperements\\configs\\active");
         createDirectory("D:\\Games\\FilesExperements\\configs\\backup");
         createDirectory("D:\\Games\\FilesExperements\\configs\\logs");
+        createDirectory("D:\\Games\\FilesExperements\\configs\\temp");
 
         createFile("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg");
         createFile("D:\\Games\\FilesExperements\\configs\\logs\\install.log");
+        createFile("D:\\Games\\FilesExperements\\configs\\temp\\temp.txt");
 
         writeToFile("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg", "volume=10");
         writeToFile("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg", "volume=20");
@@ -32,11 +34,15 @@ public class Main1 {
 
         writeChanges("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg","volume","100");
 
+        listAllCfgFiles("D:\\Games\\FilesExperements\\configs");
+
+        writeLogs();
+
     }
 
     public static void createDirectory(String path){
         File directory = new File(path);
-        directory.mkdir();
+        directory.mkdirs();
         LocalDateTime createTime = LocalDateTime.now();
 
         if(directory.isDirectory() && directory.exists()){
@@ -67,7 +73,7 @@ public class Main1 {
 
     public static void writeLogs(){
         try(BufferedWriter br = new BufferedWriter(
-                new FileWriter("D:\\Games\\FilesExperements\\temp\\temp.txt"))){
+                new FileWriter("D:\\Games\\FilesExperements\\configs\\temp\\temp.txt"))){
             for (int i = 0; i < logs.length(); i++) {
                 br.write(logs.charAt(i));
             }
@@ -156,7 +162,7 @@ public class Main1 {
         File dir = new File(dirPath);
 
         if (!dir.exists() || !dir.isDirectory()) {
-            System.out.println("⚠️ Папка не найдена: " + dirPath);
+            System.out.println("Папка не найдена: " + dirPath);
             return;
         }
 

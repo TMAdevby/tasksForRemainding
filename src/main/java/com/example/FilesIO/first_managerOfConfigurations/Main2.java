@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main2 {
@@ -18,11 +19,18 @@ public class Main2 {
         String yourPath = sc.nextLine();
 
         checkPath(yourPath);
+
         File file1 = createFileInDirectory(yourPath,"readme.txt");
         File file2 = createFileInDirectory(yourPath,"data.bin");
         File file3 = createFileInDirectory(yourPath,"config.properties");
 
         getInformation(file1);
+        getInformation(file2);
+        getInformation(file3);
+
+        deleteFile(file2);
+
+        printListFiles(yourPath);
 
     }
 
@@ -64,5 +72,19 @@ public class Main2 {
         System.out.printf("Дата последнего изменения : {}" , file.lastModified());
         System.out.printf("Права на чтение : {} , pзапись : {}" , file.canRead(), file.canWrite());
         System.out.println("__________________________");
+    }
+
+    public static void deleteFile(File file){
+        if(file.isFile() && file.exists()){
+            file.delete();
+        }
+    }
+
+    public static void printListFiles(String dir){
+        File directory = new File(dir);
+        if(directory.isDirectory() && directory.exists()){
+            File[] files = directory.listFiles();
+            System.out.println(Arrays.toString(files));
+        }
     }
 }

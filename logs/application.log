@@ -1,0 +1,8 @@
+2026-06-04 16:45:52.223 [main] DEBUG c.e.F.f.Main2 - Папка  создана
+2026-06-04 16:45:52.226 [main] INFO  c.e.F.f.Main2 - Файл создан \readme.txt
+2026-06-04 16:45:52.226 [main] INFO  c.e.F.f.Main2 - Файл создан \data.bin
+2026-06-04 16:45:52.233 [main] INFO  c.e.F.f.Main2 - Файл создан \config.properties
+2026-06-04 16:46:43.136 [main] DEBUG c.e.F.f.Main2 - Папка dir создана
+2026-06-04 16:46:43.138 [main] INFO  c.e.F.f.Main2 - Файл создан dir\readme.txt
+2026-06-04 16:46:43.139 [main] INFO  c.e.F.f.Main2 - Файл создан dir\data.bin
+2026-06-04 16:46:43.139 [main] INFO  c.e.F.f.Main2 - Файл создан dir\config.properties

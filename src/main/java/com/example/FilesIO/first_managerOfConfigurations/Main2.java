@@ -5,24 +5,29 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main2 {
 
     private static final Logger log = LoggerFactory.getLogger(Main2.class);
+    private static final DateTimeFormatter DATE_FORMAT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        System.out.println("введите относительный путь к папке");
-        String path = "files2";
+        System.out.println("Введите относительный путь к папке:");
         String yourPath = sc.nextLine();
 
         checkPath(yourPath);
 
-        File file1 = createFileInDirectory(yourPath,"readme.txt");
-        File file2 = createFileInDirectory(yourPath,"data.bin");
-        File file3 = createFileInDirectory(yourPath,"config.properties");
+        File file1 = createFileInDirectory(yourPath, "readme.txt");
+        File file2 = createFileInDirectory(yourPath, "data.bin");
+        File file3 = createFileInDirectory(yourPath, "config.properties");
 
         getInformation(file1);
         getInformation(file2);
@@ -32,59 +37,91 @@ public class Main2 {
 
         printListFiles(yourPath);
 
+        sc.close();
     }
 
-    public static void checkPath(String path){
-
+    public static void checkPath(String path) {
         File yourPath = new File(path);
-        if(yourPath.exists()){
-            log.info("Папка {} существует", yourPath);
+        if (yourPath.exists()) {
+            log.info("Папка уже существует: {}", yourPath.getAbsolutePath());
+        } else {
+            if (yourPath.mkdirs()) {
+                log.info("Папка создана: {}", yourPath.getAbsolutePath());
+            } else {
+                log.error("Не удалось создать папку: {}", yourPath.getAbsolutePath());
+            }
         }
-        else {
-            yourPath.mkdirs();
-            log.debug("Папка {} создана", yourPath);
-        }
-
     }
 
-    public static File createFileInDirectory(String createdDirectory ,String fileName){
+    public static File createFileInDirectory(String createdDirectory, String fileName) {
+        // ✅ Используем конструктор File(parent, child) — кроссплатформенно
+        File file = new File(createdDirectory, fileName);
 
-        File file = new File(createdDirectory + "\\" + fileName);
-
-        if(file.exists()){
-            log.info("Файл уже существует {}", file);
-        }else{
+        if (file.exists()) {
+            log.info("Файл уже существует: {}", file.getAbsolutePath());
+        } else {
             try {
-                file.createNewFile();
-                log.info("Файл создан {}", file);
+                if (file.createNewFile()) {
+                    log.info("Файл создан: {}", file.getAbsolutePath());
+                }
             } catch (IOException e) {
-                log.warn("Ошибка {} при создании файла {}",e, file);
+                // ✅ Правильный порядок: сообщение, параметры, исключение в конце
+                log.error("Ошибка при создании файла {}: {}",
+                        file.getAbsolutePath(), e.getMessage(), e);
                 throw new RuntimeException(e);
             }
         }
-
         return file;
     }
 
-    public static void getInformation(File file){
-        System.out.printf("Абсолютный путь к файлу : {}" , file.getAbsolutePath());
-        System.out.printf("Размер в байтах : {}" , file.length());
-        System.out.printf("Дата последнего изменения : {}" , file.lastModified());
-        System.out.printf("Права на чтение : {} , pзапись : {}" , file.canRead(), file.canWrite());
+    public static void getInformation(File file) {
+        if (!file.exists()) {
+            System.out.println("Файл не существует: " + file.getName());
+            return;
+        }
+
+        // ✅ Конвертируем миллисекунды в читаемую дату
+        String lastModified = LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(file.lastModified()),
+                ZoneId.systemDefault()
+        ).format(DATE_FORMAT);
+
+        // ✅ Используем %s и %n для printf
+        System.out.printf("Файл: %s%n", file.getName());
+        System.out.printf("  Абсолютный путь: %s%n", file.getAbsolutePath());
+        System.out.printf("  Размер (байт): %d%n", file.length());
+        System.out.printf("  Изменён: %s%n", lastModified);
+        System.out.printf("  Чтение: %b | Запись: %b%n", file.canRead(), file.canWrite());
         System.out.println("__________________________");
     }
 
-    public static void deleteFile(File file){
-        if(file.isFile() && file.exists()){
-            file.delete();
+    public static void deleteFile(File file) {
+        if (file.isFile() && file.exists()) {
+            // ✅ Проверяем результат удаления
+            if (file.delete()) {
+                log.info("Файл успешно удалён: {}", file.getName());
+            } else {
+                log.warn("Не удалось удалить файл: {}", file.getName());
+            }
+        } else {
+            log.warn("Файл для удаления не найден: {}", file.getName());
         }
     }
 
-    public static void printListFiles(String dir){
+    public static void printListFiles(String dir) {
         File directory = new File(dir);
-        if(directory.isDirectory() && directory.exists()){
+        if (directory.isDirectory() && directory.exists()) {
             File[] files = directory.listFiles();
-            System.out.println(Arrays.toString(files));
+            // ✅ Проверка на null
+            if (files != null && files.length > 0) {
+                System.out.println("Содержимое папки " + dir + ":");
+                Arrays.stream(files)
+                        .forEach(f -> System.out.println("  " + f.getName()));
+            } else {
+                System.out.println("Папка пуста.");
+            }
+        } else {
+            System.out.println("Папка не найдена: " + dir);
         }
     }
 }

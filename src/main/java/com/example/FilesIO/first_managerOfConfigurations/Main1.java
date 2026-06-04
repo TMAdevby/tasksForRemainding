@@ -1,5 +1,8 @@
 package com.example.FilesIO.first_managerOfConfigurations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -10,89 +13,96 @@ import java.util.List;
 
 public class Main1 {
 
-    private static StringBuilder logs = new StringBuilder();
+    // Создаем логгер для этого класса
+    private static final Logger log = LoggerFactory.getLogger(Main1.class);
 
     public static void main(String[] args) {
+        log.info("=== Запуск менеджера конфигураций ===");
 
-        createDirectory("D:\\Games\\FilesExperements\\configs\\active");
-        createDirectory("D:\\Games\\FilesExperements\\configs\\backup");
-        createDirectory("D:\\Games\\FilesExperements\\configs\\logs");
-        createDirectory("D:\\Games\\FilesExperements\\configs\\temp");
+        try {
+            createDirectory("D:\\Games\\FilesExperements\\configs\\active");
+            createDirectory("D:\\Games\\FilesExperements\\configs\\backup");
+            createDirectory("D:\\Games\\FilesExperements\\configs\\logs");
+            createDirectory("D:\\Games\\FilesExperements\\configs\\temp");
 
-        createFile("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg");
-        createFile("D:\\Games\\FilesExperements\\configs\\logs\\install.log");
-        createFile("D:\\Games\\FilesExperements\\configs\\temp\\temp.txt");
+            createFile("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg");
+            createFile("D:\\Games\\FilesExperements\\configs\\logs\\install.log");
+            createFile("D:\\Games\\FilesExperements\\configs\\temp\\temp.txt");
 
-        writeToFile("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg", "volume=10");
-        writeToFile("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg", "volume=20");
-        writeToFile("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg", "volume=30");
-        writeToFile("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg", "volume=40");
-        writeToFile("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg", "volume=50");
+            writeToFile("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg", "volume=10");
+            writeToFile("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg", "volume=20");
+            writeToFile("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg", "volume=30");
+            writeToFile("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg", "volume=40");
+            writeToFile("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg", "volume=50");
 
-        copyFileWithTimestamp("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg",
-                "D:\\Games\\FilesExperements\\configs\\backup");
+            copyFileWithTimestamp("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg",
+                    "D:\\Games\\FilesExperements\\configs\\backup");
 
-        writeChanges("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg","volume","100");
+            writeChanges("D:\\Games\\FilesExperements\\configs\\active\\settings.cfg", "volume", "100");
 
-        listAllCfgFiles("D:\\Games\\FilesExperements\\configs");
+            listAllCfgFiles("D:\\Games\\FilesExperements\\configs");
 
-        writeLogs();
+            log.info("=== Все операции завершены успешно ===");
 
+        } catch (Exception e) {
+            log.error("Критическая ошибка при выполнении программы", e);
+        }
     }
 
-    public static void createDirectory(String path){
-        File directory = new File(path);
-        directory.mkdirs();
-        LocalDateTime createTime = LocalDateTime.now();
+    public static void createDirectory(String path) {
+        log.debug("Пытаемся создать директорию: {}", path);
 
-        if(directory.isDirectory() && directory.exists()){
-            logs.append("Directory " + path + " has been created in time " + createTime + ".\n");
-        }
-        else {
-            logs.append("Directory " + path + " was not created, try agen .\n");
+        File directory = new File(path);
+        boolean created = directory.mkdirs();
+
+        if (directory.isDirectory() && directory.exists()) {
+            if (created) {
+                log.info("Директория создана: {}", path);
+            } else {
+                log.debug("Директория уже существует: {}", path);
+            }
+        } else {
+            log.error("Не удалось создать директорию: {}", path);
         }
     }
 
     public static void createFile(String path) {
+        log.debug("Пытаемся создать файл: {}", path);
+
         File file = new File(path);
 
         try {
-            file.createNewFile();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        LocalDateTime createTime = LocalDateTime.now();
+            boolean created = file.createNewFile();
 
-        if(file.isFile() && file.exists()){
-            logs.append("File " + path + " has been created in time " + createTime + ".\n");
-        }
-        else {
-            logs.append("File " + path + " was not created, try agen .\n");
-        }
-    }
-
-    public static void writeLogs(){
-        try(BufferedWriter br = new BufferedWriter(
-                new FileWriter("D:\\Games\\FilesExperements\\configs\\temp\\temp.txt"))){
-            for (int i = 0; i < logs.length(); i++) {
-                br.write(logs.charAt(i));
+            if (file.isFile() && file.exists()) {
+                if (created) {
+                    log.info("Файл создан: {}", path);
+                } else {
+                    log.debug("Файл уже существует: {}", path);
+                }
+            } else {
+                log.error("Не удалось создать файл: {}", path);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error("Ошибка при создании файла {}: {}", path, e.getMessage(), e);
         }
-        System.out.println("Logs have been written");
     }
 
     public static void writeToFile(String path, String line) {
+        log.debug("Запись в файл {}: {}", path, line);
+
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(path, true))) {
             bw.write(line);
             bw.newLine();
+            log.debug("Данные успешно записаны в {}", path);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error("Ошибка записи в файл {}: {}", path, e.getMessage(), e);
         }
     }
 
     public static void copyFileWithTimestamp(String sourcePath, String backupDir) {
+        log.info("Создание бэкапа: {} -> {}", sourcePath, backupDir);
+
         String timestamp = LocalDateTime.now().format(
                 DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
 
@@ -110,15 +120,15 @@ public class Main1 {
                     target.toPath(),
                     StandardCopyOption.REPLACE_EXISTING
             );
-            System.out.println(" Файл скопирован (Files.copy): " + target.getAbsolutePath());
-            logs.append("File copied via Files.copy: ").append(target.getAbsolutePath()).append("\n");
+            log.info("Файл успешно скопирован: {}", target.getAbsolutePath());
         } catch (IOException e) {
-            System.out.println(" Ошибка: " + e.getMessage());
-            throw new RuntimeException(e);
+            log.error("Ошибка копирования файла: {}", e.getMessage(), e);
         }
     }
 
     public static void writeChanges(String filePath, String key, String newValue) {
+        log.info("Изменение конфигурации: {}={} в файле {}", key, newValue, filePath);
+
         List<String> lines = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -127,7 +137,8 @@ public class Main1 {
                 lines.add(line);
             }
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка чтения файла: " + filePath, e);
+            log.error("Ошибка чтения файла {}: {}", filePath, e.getMessage(), e);
+            return;
         }
 
         boolean found = false;
@@ -136,12 +147,13 @@ public class Main1 {
             if (current.startsWith(key + "=")) {
                 lines.set(i, key + "=" + newValue);
                 found = true;
+                log.debug("Найден ключ {} в строке {}", key, i);
                 break;
             }
         }
 
         if (!found) {
-            System.out.println(" Ключ '" + key + "' не найден в файле");
+            log.warn("Ключ '{}' не найден в файле {}", key, filePath);
             return;
         }
 
@@ -150,36 +162,39 @@ public class Main1 {
                 bw.write(line);
                 bw.newLine();
             }
-            System.out.println(" Значение " + key + " изменено на " + newValue);
-            logs.append("Config updated: ").append(key).append("=").append(newValue)
-                    .append(" in ").append(filePath).append("\n");
+            log.info("Конфигурация успешно обновлена: {}={}", key, newValue);
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка записи в файл: " + filePath, e);
+            log.error("Ошибка записи в файл {}: {}", filePath, e.getMessage(), e);
         }
     }
 
     public static void listAllCfgFiles(String dirPath) {
+        log.debug("Поиск .cfg файлов в {}", dirPath);
+
         File dir = new File(dirPath);
 
         if (!dir.exists() || !dir.isDirectory()) {
-            System.out.println("Папка не найдена: " + dirPath);
+            log.warn("Папка не найдена: {}", dirPath);
             return;
         }
 
         File[] items = dir.listFiles();
 
         if (items == null) {
+            log.warn("Не удалось прочитать содержимое папки: {}", dirPath);
             return;
         }
 
+        int count = 0;
         for (File item : items) {
             if (item.isFile() && item.getName().endsWith(".cfg")) {
-                System.out.println(" " + item.getAbsolutePath());
-            }
-            else if (item.isDirectory()) {
+                log.info("Найден .cfg файл: {}", item.getAbsolutePath());
+                count++;
+            } else if (item.isDirectory()) {
                 listAllCfgFiles(item.getAbsolutePath());
             }
         }
-    }
 
+        log.info("Всего найдено .cfg файлов: {}", count);
+    }
 }

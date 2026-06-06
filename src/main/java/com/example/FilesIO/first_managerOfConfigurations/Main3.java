@@ -10,6 +10,7 @@ public class Main3 {
         File diaryFile = createDiaryFile("diary.txt");
         createText();
         createText();
+        readDiary();
 
     }
 
@@ -45,6 +46,12 @@ public class Main3 {
 
     public static void readDiary() {
         try(BufferedReader br = new BufferedReader(new FileReader("diary.txt"))) {
+            String line;
+            int i = 0;
+            while((line = br.readLine()) != null){
+                i++;
+                System.out.println(i + ". " + line);
+            }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

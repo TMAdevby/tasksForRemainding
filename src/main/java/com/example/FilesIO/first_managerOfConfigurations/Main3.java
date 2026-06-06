@@ -1,11 +1,15 @@
 package com.example.FilesIO.first_managerOfConfigurations;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
 
 public class Main3 {
     public static void main(String[] args) {
         File diaryFile = createDiaryFile("diary.txt");
+        createText();
+        createText();
 
     }
 
@@ -23,5 +27,28 @@ public class Main3 {
             }
         }
         return file;
+    }
+
+    public static void createText(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Сделайте запись в дневнике");
+        String line = sc.nextLine();
+
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter("diary.txt",true))){
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            bw.write("[ " + timestamp + " ]");
+            bw.newLine();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void readDiary() {
+        try(BufferedReader br = new BufferedReader(new FileReader("diary.txt"))) {
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

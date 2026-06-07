@@ -2,8 +2,7 @@ package com.example.FilesIO.first_managerOfConfigurations;
 
 import com.sun.jdi.PathSearchingVirtualMachine;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 public class Main5 {
     public static void main(String[] args) {
@@ -23,5 +22,16 @@ public class Main5 {
         }
     }
 
-    pu
+    public static void writeToFile(){
+        try(DataOutputStream dos = new DataOutputStream(new FileOutputStream("data.bin"))){
+            dos.writeInt(100);
+            dos.writeDouble(3.14);
+            dos.writeBoolean(true);
+            dos.writeUTF("Привет");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

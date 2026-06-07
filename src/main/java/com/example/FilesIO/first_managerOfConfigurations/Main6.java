@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class Main6 {
         writeToFile("nio", "Как успехи?");
         list = readFile("nio");
         copyFile("nio","copy");
-
+        renameFile("nio", "nio2");
     }
 
     public static void createFile(String name){
@@ -36,7 +37,7 @@ public class Main6 {
     }
 
     public static void writeToFile(String file, String line) {
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(file))){
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))){
             bw.write(line);
             bw.newLine();
         } catch (IOException e) {
@@ -59,7 +60,7 @@ public class Main6 {
 
     public static void copyFile(String name, String newName){
         Path file = Paths.get(name);
-        Path destFile = Paths.get(name);
+        Path destFile = Paths.get(newName);
         if(Files.exists(file) && !Files.exists(destFile)){
             try {
                 Files.copy(Path.of(name), Path.of(newName));
@@ -71,6 +72,15 @@ public class Main6 {
         }
     }
 
-    public static
+    public static void renameFile (String name, String newName){
+        Path file = Paths.get(name);
+        if(Files.exists(file)){
+            try {
+                Files.move(Path.of(name), Path.of(newName), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
 }

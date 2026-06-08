@@ -1,11 +1,14 @@
 package com.example.FilesIO.first_managerOfConfigurations;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 public class Main7 {
     public static void main(String[] args) {
@@ -22,6 +25,11 @@ public class Main7 {
 
         serialize(list);
 
+        zip("heroes.dat");
+
+        unzip("heroes_backup.zip");
+
+        deserialize("heroes.dat");
     }
 
     public static void serialize (List<Hero> list){
@@ -34,4 +42,75 @@ public class Main7 {
             throw new RuntimeException(e);
         } ;
     }
+
+    public static void zip(String fileName) {
+        try(ZipOutputStream zout = new ZipOutputStream(new FileOutputStream("heroes_backup.zip"));
+            FileInputStream fis = new FileInputStream(fileName)){
+
+            ZipEntry entry1 = new ZipEntry(fileName);
+            zout.putNextEntry(entry1);
+
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+
+            zout.write(buffer);
+
+            zout.closeEntry();
+
+            Path file = Paths.get(fileName);
+            Files.delete(file);
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void unzip(String zipName) {
+        try(ZipInputStream zis = new ZipInputStream(new FileInputStream(zipName))){
+
+            ZipEntry entry;
+            String name;
+            while((entry=zis.getNextEntry())!=null) {
+                name = entry.getName();
+
+                FileOutputStream fis = new FileOutputStream(name);
+
+                for (int c = zis.read(); c != -1; c = zis.read()) {
+                    fis.write(c);
+                }
+                fis.flush();
+                zis.closeEntry();
+                fis.close();
+            }
+
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void deserialize (String fileName){
+        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))){
+            List<Hero> list = (ArrayList)ois.readObject();
+            for(Hero hero : list){
+                System.out.println("Имя : " + hero.getName() + " уровень : " + hero.getLevel());
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+
+
+
 }

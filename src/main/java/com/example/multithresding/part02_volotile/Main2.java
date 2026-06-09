@@ -2,7 +2,26 @@ package com.example.multithresding.part02_volotile;
 
 public class Main2 {
     public static void main(String[] args) {
+        DataLoader loader = new DataLoader();
+        Thread thread = new Thread(loader, "Поток-загрузчик");
 
+        Thread thread1 = new Thread(new User(loader), "Поток-пользователь");
+
+        thread.start();
+        thread1.start();
+
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            thread1.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println("Конец");
     }
 }
 
@@ -45,7 +64,6 @@ class User implements Runnable{
                     Thread.currentThread().interrupt();
                     return;
                 }
-
         }
         System.out.println(Thread.currentThread().getName() + ": Получены данные -> " + loader.data);
     }

@@ -6,7 +6,7 @@ public class Main3 {
             for (int i = 1; i < 11; i++) {
                 System.out.printf("Поток :[%s] , приоритет :[%d] , шаг :[%d]\n", Thread.currentThread().getName(),
                         Thread.currentThread().getPriority(), i);
-                //Thread.yield();
+                Thread.yield();
             }
         });
 

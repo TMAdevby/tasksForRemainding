@@ -5,6 +5,11 @@ public class Main4 {
         Thread thread = new Thread(() -> {
             for (int i = 1; i < 6; i++) {
                 System.out.printf("Загрузка ... [%d]\n", i);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
             }
         });
 

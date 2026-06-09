@@ -13,23 +13,40 @@ class DataLoader implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Начинаю загрузку данных...");
+        System.out.println(Thread.currentThread().getName() + " начинаю загрузку данных...");
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new RuntimeException(e);
+            return;
         }
         this.data = "Важная конфигурация";
         this.isReady = true;
-        System.out.println("Данные загружены!");
+        System.out.println(Thread.currentThread().getName() + " данные загружены!");
     }
 }
 
 class User implements Runnable{
 
+    private final DataLoader loader;
+
+    User(DataLoader loader) {
+        this.loader = loader;
+    }
+
     @Override
     public void run() {
+        System.out.println(Thread.currentThread().getName() + " ожидаю данные...");
 
+        while (!loader.isReady){
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+
+        }
+        System.out.println(Thread.currentThread().getName() + ": Получены данные -> " + loader.data);
     }
 }

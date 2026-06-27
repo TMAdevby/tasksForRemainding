@@ -1,13 +1,23 @@
 package com.example.multithresding.part09_Semaphore;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 public class Main1 {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         ConnectionPool cp1 = new ConnectionPool(5);
         Client cl1 = new Client("Сеня" , cp1);
 
+        ExecutorService executorService = Executors.newFixedThreadPool(15);
+        for (int i = 1; i < 16 ; i++) {
+            executorService.execute(new Client("Client " + i, cp1));
+        }
 
+
+        executorService.shutdown();
+        executorService.awaitTermination(1, TimeUnit.MINUTES);
     }
 }
 

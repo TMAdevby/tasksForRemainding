@@ -11,7 +11,8 @@ public class Main1 {
             final int id = i;
             new Thread(() ->{
             try {
-                    Thread.sleep((int) (Math.random() * 2000));
+                int msek = Math.random() < 0.5 ? 1000 : 2000;
+                    Thread.sleep (msek);
                 System.out.println("Воркер " + id + " завершил работу.");
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);

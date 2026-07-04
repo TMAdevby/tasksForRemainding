@@ -16,7 +16,6 @@ public class Main2 {
                     throw new RuntimeException(e);
                 }
                 System.out.println("Бегун " + runner + " стартовал");
-
             }).start();
         }
 

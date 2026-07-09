@@ -1,6 +1,6 @@
 package com.example.multithresding.part13_ConcurentHashMap;
 
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -47,7 +47,16 @@ public class Main1 {
         thread1.join();
         thread2.join();
 
-        for (Map.Entry<String, Integer> item : concurrentHashMap.entrySet()) {
+        List<Map.Entry<String, Integer>> entries = new ArrayList<>(concurrentHashMap.entrySet());
+
+        entries.sort(Comparator.comparingInt(Map.Entry::getValue));
+
+        LinkedHashMap<String, Integer> linkedHashMap = new LinkedHashMap<>();
+        for (Map.Entry<String, Integer> entry : entries) {
+            linkedHashMap.put(entry.getKey(), entry.getValue());
+        }
+
+        for (Map.Entry<String, Integer> item : linkedHashMap.entrySet()) {
             System.out.println("Событие " + item.getKey() + " Порядковый номер " + item.getValue());
         }
 

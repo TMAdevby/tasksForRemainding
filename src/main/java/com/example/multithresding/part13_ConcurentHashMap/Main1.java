@@ -8,11 +8,7 @@ public class Main1 {
     public static void main(String[] args) throws InterruptedException {
         ConcurrentHashMap <String, Integer> concurrentHashMap = new ConcurrentHashMap();
 
-
-
         Thread thread1 = new Thread(() -> {
-
-            AtomicInteger counterClick = new AtomicInteger(0);
 
             for (int i = 1; i < 11; i++) {
                 System.out.println("Click");
@@ -21,14 +17,11 @@ public class Main1 {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                concurrentHashMap.put("Click ",counterClick.incrementAndGet());
+                concurrentHashMap.merge("Click ",1,Integer::sum);
             }
-
         });
 
         Thread thread2 = new Thread(() -> {
-
-            AtomicInteger exceptionCounter = new AtomicInteger(0);
 
             for (int i = 1; i < 7; i++) {
                 System.out.println("Exception");
@@ -37,7 +30,7 @@ public class Main1 {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                concurrentHashMap.put("Eхception ",exceptionCounter.incrementAndGet());
+                concurrentHashMap.merge("Exception ",1,Integer::sum);
             }
         });
 

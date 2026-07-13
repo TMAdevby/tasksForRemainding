@@ -25,6 +25,11 @@ public class Main1 {
 
         Thread thread2 = new Thread(() -> {
             try {
+                thread1.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -101,7 +106,9 @@ public class Main1 {
         }
 
         public void onEvent(Listener listener){
-            this.getListeners().removeIf(l -> l.getNumber() % 3 == 0);
+            if (listener.getNumber() % 3 == 0) {
+                this.removeListener(listener);
+            }
         }
 
     }

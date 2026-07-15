@@ -1,10 +1,13 @@
 package com.example.multithresding.part15_ArrayBlockingQueue;
 
+import ch.qos.logback.core.model.INamedModel;
+
+import javax.xml.namespace.QName;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class Main2 {
-    public static void main(String[] args) {
-        ArrayBlockingQueue <String> arrayBlockingQueue = new ArrayBlockingQueue<>();
+    public static void main(String[] args) throws InterruptedException {
+        ArrayBlockingQueue <String> arrayBlockingQueue = new ArrayBlockingQueue<>(10);
 
         Thread thread1 = new Thread(() -> {
             for (int i = 1; i < 31; i++) {
@@ -24,6 +27,57 @@ public class Main2 {
             }
         });
 
+        Thread thread2 = new Thread(() -> {
+            while (arrayBlockingQueue.size() > 0) {
+                try {
+                    String name = arrayBlockingQueue.take();
+                    System.out.println("Менеджер " + Thread.currentThread().getName() + " обработал " + name);
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        Thread thread3 = new Thread(() -> {
+            while (arrayBlockingQueue.size() > 0) {
+                try {
+                    String name = arrayBlockingQueue.take();
+                    System.out.println("Менеджер " + Thread.currentThread().getName() + " обработал " + name);
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        Thread thread4 = new Thread(() -> {
+            while (arrayBlockingQueue.size() > 0) {
+                try {
+                    String name = arrayBlockingQueue.take();
+                    System.out.println("Менеджер " + Thread.currentThread().getName() + " обработал " + name);
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        thread1.start();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        thread2.start();
+        thread3.start();
+        thread4.start();
+
+        thread1.join();
+        thread2.join();
+        thread3.join();
+        thread4.join();
 
     }
 

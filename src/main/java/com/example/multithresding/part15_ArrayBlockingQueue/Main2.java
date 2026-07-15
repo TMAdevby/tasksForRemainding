@@ -6,6 +6,9 @@ import javax.xml.namespace.QName;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class Main2 {
+
+    private static final String POISON_PILL = "STOP";
+
     public static void main(String[] args) throws InterruptedException {
         ArrayBlockingQueue <String> arrayBlockingQueue = new ArrayBlockingQueue<>(10);
 
@@ -25,12 +28,23 @@ public class Main2 {
                     throw new RuntimeException(e);
                 }
             }
+            try {
+                arrayBlockingQueue.put(POISON_PILL);
+                arrayBlockingQueue.put(POISON_PILL);
+                arrayBlockingQueue.put(POISON_PILL);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
         });
 
         Thread thread2 = new Thread(() -> {
-            while (arrayBlockingQueue.size() > 0) {
+            while (true) {
                 try {
                     String name = arrayBlockingQueue.take();
+                    if (POISON_PILL.equals(name)) {
+                        break;  // Выходим из цикла
+                    }
                     System.out.println("Менеджер " + Thread.currentThread().getName() + " обработал " + name);
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
@@ -40,9 +54,12 @@ public class Main2 {
         });
 
         Thread thread3 = new Thread(() -> {
-            while (arrayBlockingQueue.size() > 0) {
+            while (true) {
                 try {
                     String name = arrayBlockingQueue.take();
+                    if (POISON_PILL.equals(name)) {
+                        break;  // Выходим из цикла
+                    }
                     System.out.println("Менеджер " + Thread.currentThread().getName() + " обработал " + name);
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
@@ -52,9 +69,12 @@ public class Main2 {
         });
 
         Thread thread4 = new Thread(() -> {
-            while (arrayBlockingQueue.size() > 0) {
+            while (true) {
                 try {
                     String name = arrayBlockingQueue.take();
+                    if (POISON_PILL.equals(name)) {
+                        break;  // Выходим из цикла
+                    }
                     System.out.println("Менеджер " + Thread.currentThread().getName() + " обработал " + name);
                     Thread.sleep(200);
                 } catch (InterruptedException e) {

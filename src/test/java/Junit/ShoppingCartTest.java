@@ -19,6 +19,7 @@ public class ShoppingCartTest {
         shoppingCart = new ShoppingCart();
     }
 
+    //Hamcrest
     @Test
     @DisplayName("Добавление продукта: корректные данные -> товар добавлен")
     public void addProduct_correctData_productAdded(){
@@ -34,6 +35,7 @@ public class ShoppingCartTest {
         assertThat(shoppingCart.getItems().get(0), equalTo(expectedProduct));
     }
 
+    //Hamcrest
     @Test
     @DisplayName("Добавление того же товара: количество увеличивается -> нет дубликата в списке")
     public void addProduct_sameProduct_increasedQuantity_noDouble(){
@@ -53,4 +55,6 @@ public class ShoppingCartTest {
         assertThat(shoppingCart.getItems().get(0).getQuantity(),equalTo(150));
         assertThat(shoppingCart.getItems().get(0), equalTo(productInCart));
     }
+
+
 }

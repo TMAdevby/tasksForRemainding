@@ -33,4 +33,24 @@ public class ShoppingCartTest {
         assertThat(shoppingCart.getItems(), hasSize(1));
         assertThat(shoppingCart.getItems().get(0), equalTo(expectedProduct));
     }
+
+    @Test
+    @DisplayName("Добавление того же товара: количество увеличивается -> нет дубликата в списке")
+    public void addProduct_sameProduct_increasedQuantity_noDouble(){
+
+        String name = "Хлеб";
+        double price = 3.2;
+        int firstQuantity = 100;
+        int secondQuantity = 50;
+
+        shoppingCart.addProduct(name,price, firstQuantity);
+        shoppingCart.addProduct(name,price, secondQuantity);
+
+        assertThat(shoppingCart.getItems(), hasSize(1));
+
+        Product productInCart = new Product("Хлеб",3.2,150);
+
+        assertThat(shoppingCart.getItems().get(0).getQuantity(),equalTo(150));
+        assertThat(shoppingCart.getItems().get(0), equalTo(productInCart));
+    }
 }

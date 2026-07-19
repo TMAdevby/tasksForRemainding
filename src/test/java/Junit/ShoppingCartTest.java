@@ -152,4 +152,17 @@ public class ShoppingCartTest {
         assertThat(result2).isFalse();
         assertThat(shoppingCart.getItems()).hasSize(1);
     }
+
+    @Test
+    @DisplayName("Показать общую стоимость")
+    public void getTotalPrice_success() {
+        shoppingCart.addProduct("Хлеб", 100.0, 2);
+
+        shoppingCart.addProduct("Молоко", 100.0, 3);
+
+        double result = shoppingCart.getTotalPrice();
+
+        assertThat(result).isEqualTo(500.0);
+
+    }
 }

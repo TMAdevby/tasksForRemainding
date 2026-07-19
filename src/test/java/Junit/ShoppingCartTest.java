@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.offset;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -165,4 +166,36 @@ public class ShoppingCartTest {
         assertThat(result).isEqualTo(500.0);
 
     }
+
+    @Test
+    @DisplayName("Показать общую стоимость со скидкой")
+    public void getTotalPrice_success_withDiscount() {
+
+        shoppingCart.applyDiscount(20.0);
+
+        shoppingCart.addProduct("Хлеб", 100.0, 2);
+
+        shoppingCart.addProduct("Молоко", 100.0, 3);
+
+        double result = shoppingCart.getTotalPrice();
+
+        assertThat(result).isCloseTo(400.0,offset(0.01));
+
+    }
+
+    @Test
+    @DisplayName("Показать общую стоимость со скидкой")
+    public void applyDiscount_success_withDiscount() {
+
+        shoppingCart.addProduct("Хлеб", 100.0, 2);
+
+        assertThatThrownBy(() -> shoppingCart.applyDiscount(-5))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Скидка должна быть от 0 до 100");
+        assertThatThrownBy(() -> shoppingCart.applyDiscount(105))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Скидка должна быть от 0 до 100");
+    }
+
+
 }

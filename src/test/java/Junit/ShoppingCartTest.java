@@ -107,19 +107,26 @@ public class ShoppingCartTest {
     }
 
     @Test
-    @DisplayName("Удаление товара по имени")
-    public void removeProductByName_delete(){
+    @DisplayName("Удаление товара в нижнем регистре")
+    public void removeProductByName_lowercase() {
+        shoppingCart.addProduct("Хлеб", 3.0, 100);
 
-        String name = "Хлеб";
-        double price = 3.0;
-        int quantity = 100;
-        String name2 = "хлеб";
+        boolean result = shoppingCart.removeProductByName("хлеб");
 
-        shoppingCart.addProduct(name,price, quantity);
-
-        shoppingCart.removeProductByName(name2);
-
-        assertThat(shoppingCart.getItems()).hasSize(0);
-
+        assertThat(result).isTrue();
+        assertThat(shoppingCart.getItems()).isEmpty();
     }
+
+    @Test
+    @DisplayName("Удаление товара в смешанном регистре")
+    public void removeProductByName_mixedCase() {
+        shoppingCart.addProduct("Хлеб", 3.0, 100);
+
+        boolean result = shoppingCart.removeProductByName("хЛеб");
+
+        assertThat(result).isTrue();
+        assertThat(shoppingCart.getItems()).isEmpty();
+    }
+
+
 }

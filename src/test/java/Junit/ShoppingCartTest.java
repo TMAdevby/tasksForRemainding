@@ -70,5 +70,20 @@ public class ShoppingCartTest {
                 .hasMessage("Название товара не может быть пустым");
     }
 
+    @Test
+    @DisplayName("Цена 0 или отрицательна -> выбрасывает IllegalArgumentException")
+    public void addProduct_priceZeroOrMinus_throwIllegalArgumentException(){
 
+        String name = "Хлеб";
+        double price = 0.0;
+        double price2 = -5.2;
+        int quantity = 100;
+
+        assertThatThrownBy(() -> shoppingCart.addProduct(name, price, quantity))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Цена должна быть больше нуля");
+        assertThatThrownBy(() -> shoppingCart.addProduct(name, price2, quantity))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Цена должна быть больше нуля");
+    }
 }

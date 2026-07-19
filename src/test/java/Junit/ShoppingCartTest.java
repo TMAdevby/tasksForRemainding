@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -225,6 +227,26 @@ public class ShoppingCartTest {
 
     }
 
+    @Test
+    @DisplayName("Копия списка")
+    public void getItems_copyOfItem() {
 
+        shoppingCart.addProduct("Хлеб", 100.0, 2);
+
+        shoppingCart.addProduct("Молоко", 100.0, 3);
+
+        List<Product> copyItems = shoppingCart.getItems();
+
+        Product productToADD = new Product("Мясо", 300.0, 3);
+
+        copyItems.add(productToADD);
+
+        assertThat(shoppingCart.getItems()).hasSize(2);
+
+        assertThat(shoppingCart.getItems().get(0)).isEqualTo(new Product("Хлеб", 100.0, 2));
+
+        assertThat(shoppingCart.getItems().get(1)).isEqualTo(new Product("Молоко", 100.0, 3));
+
+    }
 
 }

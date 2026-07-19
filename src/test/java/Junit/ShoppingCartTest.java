@@ -184,7 +184,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    @DisplayName("Показать общую стоимость со скидкой")
+    @DisplayName("Показать общую стоимость со не верной скидкой")
     public void applyDiscount_success_withDiscount() {
 
         shoppingCart.addProduct("Хлеб", 100.0, 2);
@@ -195,6 +195,34 @@ public class ShoppingCartTest {
         assertThatThrownBy(() -> shoppingCart.applyDiscount(105))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Скидка должна быть от 0 до 100");
+    }
+
+    @Test
+    @DisplayName("Показать общую стоимость со пустой корзиной")
+    public void getTotalPrice_emptyCart() {
+
+        double result = shoppingCart.getTotalPrice();
+
+        assertThat(result).isEqualTo(0);
+
+    }
+
+    @Test
+    @DisplayName("Очистить")
+    public void clear_emptyCart_emptyDiscount() {
+
+        shoppingCart.applyDiscount(20.0);
+
+        shoppingCart.addProduct("Хлеб", 100.0, 2);
+
+        shoppingCart.addProduct("Молоко", 100.0, 3);
+
+        shoppingCart.clear();
+
+        assertThat(shoppingCart.getItems()).isEmpty();
+
+        assertThat(shoppingCart.getDiscountPercent()).isEqualTo(0);
+
     }
 
 

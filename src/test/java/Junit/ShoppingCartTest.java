@@ -128,5 +128,28 @@ public class ShoppingCartTest {
         assertThat(shoppingCart.getItems()).isEmpty();
     }
 
+    @Test
+    @DisplayName("Удаление товара которого нет в списке")
+    public void removeProductByName_productIsNotInList() {
+        shoppingCart.addProduct("Хлеб", 3.0, 100);
 
+        boolean result = shoppingCart.removeProductByName("Молоко");
+
+        assertThat(result).isFalse();
+        assertThat(shoppingCart.getItems()).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("Удаление товара которого нет в списке")
+    public void removeProductByName_productIsNullOrBlanc() {
+        shoppingCart.addProduct("Хлеб", 3.0, 100);
+
+        boolean result = shoppingCart.removeProductByName(null);
+
+        boolean result2 = shoppingCart.removeProductByName("   ");
+
+        assertThat(result).isFalse();
+        assertThat(result2).isFalse();
+        assertThat(shoppingCart.getItems()).hasSize(1);
+    }
 }

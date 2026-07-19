@@ -2,10 +2,12 @@ package Junit;
 
 import com.example.Junit_Testing.Product;
 import com.example.Junit_Testing.ShoppingCart;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -102,5 +104,22 @@ public class ShoppingCartTest {
         assertThatThrownBy(() -> shoppingCart.addProduct(name, price, quantity2))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Количество должно быть больше нуля");
+    }
+
+    @Test
+    @DisplayName("Удаление товара по имени")
+    public void removeProductByName_delete(){
+
+        String name = "Хлеб";
+        double price = 3.0;
+        int quantity = 100;
+        String name2 = "хлеб";
+
+        shoppingCart.addProduct(name,price, quantity);
+
+        shoppingCart.removeProductByName(name2);
+
+        assertThat(shoppingCart.getItems()).hasSize(0);
+
     }
 }

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -54,6 +55,19 @@ public class ShoppingCartTest {
 
         assertThat(shoppingCart.getItems().get(0).getQuantity(),equalTo(150));
         assertThat(shoppingCart.getItems().get(0), equalTo(productInCart));
+    }
+
+    @Test
+    @DisplayName("Название с пробелами -> выбрасывает IllegalArgumentException")
+    public void addProduct_nameWithBlanc_throwIllegalArgumentException(){
+
+        String name = "  ";
+        double price = 5.2;
+        int quantity = 100;
+
+        assertThatThrownBy(() -> shoppingCart.addProduct(name, price, quantity))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Название товара не может быть пустым");
     }
 
 

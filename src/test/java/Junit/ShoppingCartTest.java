@@ -86,4 +86,21 @@ public class ShoppingCartTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Цена должна быть больше нуля");
     }
+
+    @Test
+    @DisplayName("Цена 0 или отрицательна -> выбрасывает IllegalArgumentException")
+    public void addProduct_quantityZeroOrMinus_throwIllegalArgumentException(){
+
+        String name = "Хлеб";
+        double price = 3.0;
+        int quantity = 0;
+        int quantity2 = -5;
+
+        assertThatThrownBy(() -> shoppingCart.addProduct(name, price, quantity))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Количество должно быть больше нуля");
+        assertThatThrownBy(() -> shoppingCart.addProduct(name, price, quantity2))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Количество должно быть больше нуля");
+    }
 }

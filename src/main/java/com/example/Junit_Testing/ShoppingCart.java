@@ -72,4 +72,12 @@ public class ShoppingCart {
         items.clear();
         discountPercent = 0.0;
     }
+
+    public double getDiscountPercent() {
+        return discountPercent;
+    }
+
+    public void setDiscountPercent(double discountPercent) {
+        this.discountPercent = discountPercent;
+    }
 }

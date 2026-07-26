@@ -1,71 +1,70 @@
-package Mock.first;
+package com.example.MockTesting.first;
 
-import com.example.MockTesting.first.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.internal.stubbing.BaseStubbing;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 public class TransactionProcessorTest {
 
-        @Test
-        @DisplayName("Снятие успешно")
-        public void testProcessTransaction_Withdrawal_Success() {
-            BalanceService balanceService = Mockito.mock(BalanceService.class);
-            NotificationService notificationService = Mockito.mock(NotificationService.class);
+    @Mock
+    private BalanceService balanceService;
 
-            TransactionProcessor transactionProcessor = new TransactionProcessor(balanceService,notificationService);
+    @Mock
+    private NotificationService notificationService;
 
-            String accountId = "22222";
-            double amount = 100.0;
+    @InjectMocks
+    private TransactionProcessor transactionProcessor;
 
-            Mockito.when(balanceService.hasSufficientFunds(accountId, amount))
-                    .thenReturn(true);
+    @Test
+    @DisplayName("Снятие успешно")
+    void testProcessTransaction_Withdrawal_Success() {
+        // Given
+        String accountId = "22222";
+        double amount = 100.0;
+        when(balanceService.hasSufficientFunds(accountId, amount)).thenReturn(true);
 
-            transactionProcessor.processTransaction(accountId,new Transaction(amount, TransactionType.WITHDRAWAL));
+        // When
+        transactionProcessor.processTransaction(accountId, new Transaction(amount, TransactionType.WITHDRAWAL));
 
-            Mockito.verify(notificationService,Mockito.times(1))
-                    .sendNotification("22222","Снятие средств успешно выполнено");
-        }
+        // Then
+        verify(notificationService, times(1)).sendNotification(accountId, "Снятие средств успешно выполнено");
+    }
 
     @Test
     @DisplayName("Снятие неудачно")
-    public void testProcessTransaction_Withdrawal_InsufficientFunds() {
-        BalanceService balanceService = Mockito.mock(BalanceService.class);
-        NotificationService notificationService = Mockito.mock(NotificationService.class);
-
-        TransactionProcessor transactionProcessor = new TransactionProcessor(balanceService,notificationService);
-
+    void testProcessTransaction_Withdrawal_InsufficientFunds() {
+        // Given
         String accountId = "11111";
         double amount = 11000.0;
+        when(balanceService.hasSufficientFunds(accountId, amount)).thenReturn(false);
 
-        Mockito.when(balanceService.hasSufficientFunds(accountId, amount))
-                .thenReturn(false);
+        // When & Then
+        assertThrows(RuntimeException.class, () ->
+                transactionProcessor.processTransaction(accountId, new Transaction(amount, TransactionType.WITHDRAWAL))
+        );
 
-        org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class,
-                () -> { transactionProcessor.processTransaction(accountId, new Transaction(amount, TransactionType.WITHDRAWAL));});
-
-        Mockito.verify(notificationService,Mockito.never())
-                .sendNotification(accountId, "Снятие средств успешно выполнено");
+        verify(notificationService, never()).sendNotification(anyString(), anyString());
     }
 
     @Test
     @DisplayName("Успешное пополнение")
-    public void testProcessTransaction_Deposit_Success() {
-        BalanceService balanceService = Mockito.mock(BalanceService.class);
-        NotificationService notificationService = Mockito.mock(NotificationService.class);
-
-        TransactionProcessor transactionProcessor = new TransactionProcessor(balanceService,notificationService);
-
+    void testProcessTransaction_Deposit_Success() {
+        // Given
         String accountId = "11111";
         double amount = 11000.0;
 
-        transactionProcessor.processTransaction(accountId,new Transaction(amount, TransactionType.DEPOSIT));
+        // When
+        transactionProcessor.processTransaction(accountId, new Transaction(amount, TransactionType.DEPOSIT));
 
-        Mockito.verify(notificationService, Mockito.times(1)).sendNotification(accountId, "Счет успешно пополнен");
-
-        Mockito.verify(balanceService, Mockito.never()).hasSufficientFunds(accountId, amount);
-
+        // Then
+        verify(notificationService, times(1)).sendNotification(accountId, "Счет успешно пополнен");
+        verify(balanceService, never()).hasSufficientFunds(anyString(), anyDouble());
     }
 }

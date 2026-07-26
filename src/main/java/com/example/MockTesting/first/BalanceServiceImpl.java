@@ -17,7 +17,10 @@ public class BalanceServiceImpl implements BalanceService {
 
     @Override
     public boolean hasSufficientFunds(String accountId, double amount) {
-        if(map.containsKey(accountId)){
+        if(map.containsKey(accountId) && map.get(accountId) >= amount){
+            Double cardAmount = map.get(accountId);
+            cardAmount -= amount;
+            map.put(accountId, cardAmount);
             return true;
         }else {
             return false;

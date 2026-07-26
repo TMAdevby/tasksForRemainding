@@ -49,4 +49,23 @@ public class TransactionProcessorTest {
         Mockito.verify(notificationService,Mockito.never())
                 .sendNotification(accountId, "Снятие средств успешно выполнено");
     }
+
+    @Test
+    @DisplayName("Успешное пополнение")
+    public void testProcessTransaction_Deposit_Success() {
+        BalanceService balanceService = Mockito.mock(BalanceService.class);
+        NotificationService notificationService = Mockito.mock(NotificationService.class);
+
+        TransactionProcessor transactionProcessor = new TransactionProcessor(balanceService,notificationService);
+
+        String accountId = "11111";
+        double amount = 11000.0;
+
+        transactionProcessor.processTransaction(accountId,new Transaction(amount, TransactionType.DEPOSIT));
+
+        Mockito.verify(notificationService, Mockito.times(1)).sendNotification(accountId, "Счет успешно пополнен");
+
+        Mockito.verify(balanceService, Mockito.never()).hasSufficientFunds(accountId, amount);
+
+    }
 }
